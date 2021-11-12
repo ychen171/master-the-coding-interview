@@ -187,104 +187,6 @@ class BinarySearchTree
         return;
     }
 
-    // public void Remove2(int key)
-    // {
-    //     if (Root == null) return;
-    //     var currNode = Root;
-    //     Node parentNode = null;
-    //     while (currNode != null)
-    //     {
-    //         // found the node
-    //         if (currNode.Value == key)
-    //         {
-    //             // Option 1: No child
-    //             if (currNode.Left == null && currNode.Right == null)
-    //             {
-    //                 if (parentNode == null)
-    //                     Root = null;
-    //                 else
-    //                 {
-    //                     if (parentNode.Value < currNode.Value)
-    //                         parentNode.Right = null;
-    //                     else
-    //                         parentNode.Left = null;
-    //                 }
-    //             }
-    //             // Option 2: 1 child (left or right)
-    //             else if (currNode.Left == null && currNode.Right != null)
-    //             {
-    //                 // find right child's left most child (find min) and rename it as "replacementNode"
-    //                 var leftMostNode = currNode.Right;
-    //                 var leftMostParentNode = currNode;
-    //                 while (leftMostNode.Left != null)
-    //                 {
-    //                     leftMostParentNode = leftMostNode;
-    //                     leftMostNode = leftMostNode.Left;
-    //                 }
-    //                 // break the bond between leftMostNode and leftMostParentNode
-    //                 leftMostParentNode.Left = leftMostNode.Right;
-    //                 var replacementNode = leftMostNode;
-    //                 // Populate the right child for replacementNode
-    //                 replacementNode.Right = currNode.Right;
-    //                 // start the replacement process
-    //                 if (parentNode == null)
-    //                     Root = replacementNode;
-    //                 else
-    //                 {
-    //                     if (parentNode.Value < currNode.Value)
-    //                         parentNode.Right = replacementNode;
-    //                     else
-    //                         parentNode.Left = replacementNode;
-    //                 }
-
-    //             }
-    //             else if (currNode.Left != null && currNode.Right == null)
-    //             {
-    //                 // find left child's right most child (find max) and rename it as "replacementNode"
-    //                 var rightMostNode = currNode.Left;
-    //                 var rightMostParentNode = currNode;
-    //                 while (rightMostNode != null)
-    //                 {
-    //                     rightMostParentNode = rightMostNode;
-    //                     rightMostNode = rightMostNode.Right;
-    //                 }
-    //                 // break the bond between rightMostNode and rightMostParentNode
-    //                 rightMostParentNode.Right = rightMostNode.Left;
-    //                 var replacementNode = rightMostNode;
-    //                 // populate the left child for replacementNode
-    //                 replacementNode.Left = currNode.Left;
-    //                 // start the replacement process
-    //                 if (parentNode == null)
-    //                     Root = replacementNode;
-    //                 else
-    //                 {
-    //                     if (parentNode.Value < currNode.Value)
-    //                         parentNode.Right = replacementNode;
-    //                     else
-    //                         parentNode.Left = replacementNode;
-    //                 }
-    //             }
-    //             // Option 3: 2 childs (left and right)
-    //             else
-    //             {
-
-
-    //             }
-    //         }
-    //         // haven't found the node; continue
-    //         else if (currNode.Value < key)
-    //         {
-    //             parentNode = currNode;
-    //             currNode.Right = currNode;
-    //         }
-    //         else
-    //         {
-    //             parentNode = currNode;
-    //             currNode.Left = currNode;
-    //         }
-    //     }
-    // }
-
     public Node Successor(Node node)
     {
         // it has a right subtree, FindMin() in the right subtree
@@ -367,20 +269,106 @@ class BinarySearchTree
         else if (node.Right == null) return node;
         else return FindMax(node.Right);
     }
+
+    public List<int> BreadthFirstSearch()
+    {
+        var currNode = Root;
+        var list = new List<int>();
+        var queue = new Queue<Node>();
+        queue.Enqueue(currNode);
+
+        while(queue.Count > 0)
+        {
+            currNode = queue.Dequeue();
+            list.Add(currNode.Value);
+            if (currNode.Left != null)
+                queue.Enqueue(currNode.Left);
+            if (currNode.Right != null)
+                queue.Enqueue(currNode.Right);
+        }
+
+        return list;
+    }
+
+    public List<int> BreadthFirstSearchRecursive()
+    {
+        var queue = new Queue<Node>();
+        var list = new List<int>();
+        queue.Enqueue(Root);
+        return BreadthFirstSearchRecursive(queue, list);
+    }
+    public List<int> BreadthFirstSearchRecursive(Queue<Node> queue, List<int> list)
+    {
+        if (queue.Count == 0)
+            return list;
+        
+        var currNode = queue.Dequeue();
+        list.Add(currNode.Value);
+        if (currNode.Left != null)
+            queue.Enqueue(currNode.Left);
+        if (currNode.Right != null)
+            queue.Enqueue(currNode.Right);
+        
+        return BreadthFirstSearchRecursive(queue, list);
+    }
+
+    public List<int> DepthFirstSearchInOrder()
+    {
+        return DepthFirstSearchInOrder(Root, new List<int>());
+    }
+    public List<int> DepthFirstSearchInOrder(Node node, List<int> list)
+    {
+        if (node == null)
+            return list;
+
+        DepthFirstSearchInOrder(node.Left, list);
+        list.Add(node.Value);
+        DepthFirstSearchInOrder(node.Right, list);
+        return list;
+
+    }
+    public List<int> DepthFirstSearchPreOrder()
+    {
+        return DepthFirstSearchPreOrder(Root, new List<int>());
+    }
+    public List<int> DepthFirstSearchPreOrder(Node node, List<int> list)
+    {
+        if (node == null)
+            return list;
+        
+        list.Add(node.Value);
+        DepthFirstSearchPreOrder(node.Left, list);
+        DepthFirstSearchPreOrder(node.Right, list);
+        return list;
+    }
+    public List<int> DepthFirstSearchPostOrder()
+    {
+        return DepthFirstSearchPostOrder(Root, new List<int>());        
+    }
+    public List<int> DepthFirstSearchPostOrder(Node node, List<int> list)
+    {
+        if (node == null)
+            return list;
+        
+        DepthFirstSearchPostOrder(node.Left, list);
+        DepthFirstSearchPostOrder(node.Right, list);
+        list.Add(node.Value);
+        return list;
+    }
 }
 
 static void InorderTraverseAndPrint(Node node)
 {
     if (node == null) return; // base case
     InorderTraverseAndPrint(node.Left);
-    Console.WriteLine(node.Value);
+    Console.Write(node.Value + " ");
     InorderTraverseAndPrint(node.Right);
 }
 
 static void PreorderTraverseAndPrint(Node node)
 {
     if (node == null) return; // base case
-    Console.WriteLine(node.Value);
+    Console.Write(node.Value + " ");
     PreorderTraverseAndPrint(node.Left);
     PreorderTraverseAndPrint(node.Right);
 }
@@ -390,7 +378,15 @@ static void PostorderTraverseAndPrint(Node node)
     if (node == null) return; // base case
     PostorderTraverseAndPrint(node.Left);
     PostorderTraverseAndPrint(node.Right);
-    Console.WriteLine(node.Value);
+    Console.Write(node.Value + " ");
+}
+
+static void PrintList(List<int> inputList)
+{
+    foreach (var item in inputList)
+    {
+        Console.Write(item + " ");
+    }
 }
 
 //          9
@@ -430,12 +426,31 @@ static BinarySearchTree CreateUnbalancedTree()
 //   4              20
 //1     6       15      170
 var balancedTree = CreateBalancedTree();
-Console.WriteLine("Inorder traverse");
+Console.WriteLine("Inorder Traverse...");
 InorderTraverseAndPrint(balancedTree.Root);
-Console.WriteLine("Preorder traverse");
+Console.WriteLine();
+Console.WriteLine("Preorder Traverse...");
 PreorderTraverseAndPrint(balancedTree.Root);
-Console.WriteLine("Postorder traverse");
+Console.WriteLine();
+Console.WriteLine("Postorder Traverse...");
 PostorderTraverseAndPrint(balancedTree.Root);
+Console.WriteLine();
+Console.WriteLine("Breadth First Search...");
+PrintList(balancedTree.BreadthFirstSearch());
+Console.WriteLine();
+Console.WriteLine("Breadth First Search Recursive...");
+PrintList(balancedTree.BreadthFirstSearchRecursive());
+Console.WriteLine();
+Console.WriteLine("Depth First Search In Order...");
+PrintList(balancedTree.DepthFirstSearchInOrder());
+Console.WriteLine();
+Console.WriteLine("Depth First Search Pre Order...");
+PrintList(balancedTree.DepthFirstSearchPreOrder());
+Console.WriteLine();
+Console.WriteLine("Depth First Search Post Order...");
+PrintList(balancedTree.DepthFirstSearchPostOrder());
+Console.WriteLine();
+
 Node inputNode;
 Node outputNode;
 var keyToLookup = 6;
@@ -466,44 +481,34 @@ int keyToRemove;
 Console.WriteLine("Creating a unbalanced tree");
 unbalancedTree = CreateUnbalancedTree();
 PreorderTraverseAndPrint(unbalancedTree.Root);
+Console.WriteLine();
 
 keyToRemove = 7;
 Console.WriteLine($"Removing {keyToRemove}");
 unbalancedTree.Remove(keyToRemove);
 PreorderTraverseAndPrint(unbalancedTree.Root);
+Console.WriteLine();
 
 Console.WriteLine("Creating a unbalanced tree");
 unbalancedTree = CreateUnbalancedTree();
 PreorderTraverseAndPrint(unbalancedTree.Root);
+Console.WriteLine();
 
 keyToRemove = 6;
 Console.WriteLine($"Removing {keyToRemove}");
 unbalancedTree.Remove(keyToRemove);
 PreorderTraverseAndPrint(unbalancedTree.Root);
+Console.WriteLine();
 
 Console.WriteLine("Creating a unbalanced tree");
 unbalancedTree = CreateUnbalancedTree();
 PreorderTraverseAndPrint(unbalancedTree.Root);
+Console.WriteLine();
 
 keyToRemove = 23;
 Console.WriteLine($"Removing {keyToRemove}");
 unbalancedTree.Remove(keyToRemove);
 PreorderTraverseAndPrint(unbalancedTree.Root);
+Console.WriteLine();
 
 Console.WriteLine("The End");
-// var anotherTree = new BinarySearchTree();
-// anotherTree.InsertRecursively(9);
-// anotherTree.InsertRecursively(4);
-// anotherTree.InsertRecursively(6);
-// anotherTree.InsertRecursively(20);
-// anotherTree.InsertRecursively(170);
-// anotherTree.InsertRecursively(15);
-// anotherTree.InsertRecursively(1);
-// TraverseAndPrint(anotherTree.Root);
-// var anotherKeyToLookup = 6;
-// var anotherNode = anotherTree.LookupRecursively(anotherKeyToLookup);
-// Console.WriteLine($"Search for {anotherKeyToLookup}, Return {anotherKeyToLookup == anotherNode.Value}");
-// anotherKeyToLookup = 20;
-// anotherNode = anotherTree.LookupRecursively(anotherKeyToLookup);
-// Console.WriteLine($"Search for {anotherKeyToLookup}, Return {anotherKeyToLookup == anotherNode.Value}");
-
