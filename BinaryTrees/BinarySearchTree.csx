@@ -312,46 +312,66 @@ class BinarySearchTree
         return BreadthFirstSearchRecursive(queue, list);
     }
 
-    public List<int> DepthFirstSearchInOrder()
+    public List<int> DepthFirstSearchInorder()
     {
-        return DepthFirstSearchInOrder(Root, new List<int>());
+        return DepthFirstSearchInorder(Root, new List<int>());
     }
-    public List<int> DepthFirstSearchInOrder(Node node, List<int> list)
+    public List<int> DepthFirstSearchInorder(Node node, List<int> list)
     {
         if (node == null)
             return list;
 
-        DepthFirstSearchInOrder(node.Left, list);
+        DepthFirstSearchInorder(node.Left, list);
         list.Add(node.Value);
-        DepthFirstSearchInOrder(node.Right, list);
+        DepthFirstSearchInorder(node.Right, list);
         return list;
 
     }
-    public List<int> DepthFirstSearchPreOrder()
+    public List<int> DepthFirstSearchInorderIterative()
     {
-        return DepthFirstSearchPreOrder(Root, new List<int>());
+        var currNode = Root;
+        if (currNode == null) return null;
+        var list = new List<int>();
+        var stack = new Stack<Node>();
+        while (currNode != null || stack.Count > 0)
+        {
+            while (currNode != null)
+            {
+                stack.Push(currNode);
+                currNode = currNode.Left;
+            }
+            currNode = stack.Pop();
+            list.Add(currNode.Value);
+            currNode = currNode.Right;
+        }
+
+        return list;
     }
-    public List<int> DepthFirstSearchPreOrder(Node node, List<int> list)
+    public List<int> DepthFirstSearchPreorder()
+    {
+        return DepthFirstSearchPreorder(Root, new List<int>());
+    }
+    public List<int> DepthFirstSearchPreorder(Node node, List<int> list)
     {
         if (node == null)
             return list;
         
         list.Add(node.Value);
-        DepthFirstSearchPreOrder(node.Left, list);
-        DepthFirstSearchPreOrder(node.Right, list);
+        DepthFirstSearchPreorder(node.Left, list);
+        DepthFirstSearchPreorder(node.Right, list);
         return list;
     }
-    public List<int> DepthFirstSearchPostOrder()
+    public List<int> DepthFirstSearchPostorder()
     {
-        return DepthFirstSearchPostOrder(Root, new List<int>());        
+        return DepthFirstSearchPostorder(Root, new List<int>());        
     }
-    public List<int> DepthFirstSearchPostOrder(Node node, List<int> list)
+    public List<int> DepthFirstSearchPostorder(Node node, List<int> list)
     {
         if (node == null)
             return list;
         
-        DepthFirstSearchPostOrder(node.Left, list);
-        DepthFirstSearchPostOrder(node.Right, list);
+        DepthFirstSearchPostorder(node.Left, list);
+        DepthFirstSearchPostorder(node.Right, list);
         list.Add(node.Value);
         return list;
     }
@@ -441,14 +461,17 @@ Console.WriteLine();
 Console.WriteLine("Breadth First Search Recursive...");
 PrintList(balancedTree.BreadthFirstSearchRecursive());
 Console.WriteLine();
-Console.WriteLine("Depth First Search In Order...");
-PrintList(balancedTree.DepthFirstSearchInOrder());
+Console.WriteLine("Depth First Search Inorder...");
+PrintList(balancedTree.DepthFirstSearchInorder());
 Console.WriteLine();
-Console.WriteLine("Depth First Search Pre Order...");
-PrintList(balancedTree.DepthFirstSearchPreOrder());
+Console.WriteLine("Depth First Search Inorder Iterative...");
+PrintList(balancedTree.DepthFirstSearchInorderIterative());
 Console.WriteLine();
-Console.WriteLine("Depth First Search Post Order...");
-PrintList(balancedTree.DepthFirstSearchPostOrder());
+Console.WriteLine("Depth First Search Preorder...");
+PrintList(balancedTree.DepthFirstSearchPreorder());
+Console.WriteLine();
+Console.WriteLine("Depth First Search Postorder...");
+PrintList(balancedTree.DepthFirstSearchPostorder());
 Console.WriteLine();
 
 Node inputNode;
