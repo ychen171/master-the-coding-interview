@@ -64,27 +64,15 @@ class BinarySearchTree
 
     public Node Search(int key)
     {
-        if (Root == null) return null;
         var currNode = Root;
-        while (currNode != null)
-        {
-            if (currNode.Value == key)
-                return currNode;
-            else if (currNode.Value < key)
-                currNode = currNode.Right;
-            else
-                currNode = currNode.Left;
-        }
-        return null;
+        while (currNode != null && currNode.Value != key)
+            currNode = currNode.Value > key ? currNode.Left : currNode.Right;
+        return currNode;
     }
     public Node Search(Node node, int key)
-    {
-        if (node == null) return null;
-        if (node.Value == key) return node;
-        else if (node.Value < key)
-            return Search(node.Right, key);
-        else
-            return Search(node.Left, key);
+    {      
+        if (node == null || node.Value == key) return node;
+        return node.Value > key ? Search(node.Left, key) : Search(node.Right, key);
     }
     public Node SearchRecursively(int key)
     {
